@@ -1,0 +1,10 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+data/raw/*.csv
+data/processed/*.csv
+exports_for_tableau/*.csv
+exports_for_tableau/*.hyper
+.DS_Store

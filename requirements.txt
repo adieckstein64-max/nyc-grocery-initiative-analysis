@@ -1,0 +1,8 @@
+pandas>=2.2
+numpy>=1.26
+SQLAlchemy>=2.0
+PyMySQL>=1.1
+python-dotenv>=1.0
+matplotlib>=3.8
+seaborn>=0.13
+Faker>=25.0
