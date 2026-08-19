@@ -347,6 +347,13 @@ def chart_4_time_to_impact(summary: pd.DataFrame) -> None:
 def export_tableau_extras(summary: pd.DataFrame) -> None:
     mech_out = summary.copy()
     mech_out["mechanism"] = mech_out["mechanism"].astype(str)
+    below_guardrail = mech_out["coverage_pct"] < COVERAGE_GUARDRAIL_PCT
+    mech_out["roi_label"] = (
+        "ROI " + mech_out["roi_estimate"].map("{:.2f}".format)
+        + "  |  " + mech_out["coverage_pct"].round(0).astype(int).astype(str) + "% reach"
+        + below_guardrail.map({True: "  (below reach guardrail)", False: ""})
+    )
+    mech_out["flag_status"] = below_guardrail.map({True: "Below reach guardrail", False: "Meets guardrails"})
     mech_out.to_csv(DATA_DIR / "mechanism_summary.csv", index=False)
 
     coverage_by_mechanism = summary.set_index("mechanism")["coverage_pct"]
@@ -357,18 +364,40 @@ def export_tableau_extras(summary: pd.DataFrame) -> None:
             "start_month": 0, "end_month": t["launch_month"],
             "duration_months": t["launch_month"],
             "milestone_month": None, "milestone_coverage_pct": None, "capped": False,
+            "color_key": "Build & launch phase", "milestone_label": "",
         })
+        coverage = round(float(coverage_by_mechanism[mechanism]), 1)
+        capped = bool(t.get("capped", False))
+        label = f"Month {t['coverage_month']}: {coverage:.0f}% reach"
+        if capped:
+            label += " (hard cap — cannot scale further)"
         rows.append({
             "mechanism": mechanism, "phase": "Ramp to coverage", "phase_order": 2,
             "start_month": t["launch_month"], "end_month": t["coverage_month"],
             "duration_months": t["coverage_month"] - t["launch_month"],
             "milestone_month": t["coverage_month"],
-            "milestone_coverage_pct": round(float(coverage_by_mechanism[mechanism]), 1),
-            "capped": bool(t.get("capped", False)),
+            "milestone_coverage_pct": coverage, "capped": capped,
+            "color_key": mechanism, "milestone_label": label,
         })
     pd.DataFrame(rows).to_csv(DATA_DIR / "rollout_timeline.csv", index=False)
 
-    print(f"Exported mechanism_summary.csv and rollout_timeline.csv to {DATA_DIR}")
+    tiers = load_store_cost_tiers().reset_index().rename(columns={"index": "borough_name"})
+    tier_labels = {
+        "planned_capex": "Planned CapEx (official $12M figure)",
+        "realistic_capex": "Realistic CapEx (modeled)",
+        "realistic_plus_hidden": "Realistic CapEx + Year-1 hidden subsidy",
+    }
+    tier_order = {v: i for i, v in enumerate(tier_labels.values())}
+    long_rows = []
+    for _, row in tiers.iterrows():
+        for col, label in tier_labels.items():
+            long_rows.append({
+                "borough_name": row["borough_name"], "tier": label,
+                "tier_order": tier_order[label], "value_millions": round(row[col] / 1e6, 2),
+            })
+    pd.DataFrame(long_rows).to_csv(DATA_DIR / "capex_tiers.csv", index=False)
+
+    print(f"Exported mechanism_summary.csv, rollout_timeline.csv, capex_tiers.csv to {DATA_DIR}")
 
 
 def generate_all() -> None:

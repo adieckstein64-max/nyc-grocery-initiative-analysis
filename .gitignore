@@ -7,4 +7,8 @@ data/raw/*.csv
 data/processed/*.csv
 exports_for_tableau/*.csv
 exports_for_tableau/*.hyper
+# ...except the 3 small pre-aggregated CSVs the checked-in .twb workbook depends on
+!exports_for_tableau/mechanism_summary.csv
+!exports_for_tableau/capex_tiers.csv
+!exports_for_tableau/rollout_timeline.csv
 .DS_Store

@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<workbook source-build='2026.1.0' source-platform='mac' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+  </preferences>
+  <datasource caption='mechanism_summary' inline='true' name='textscan.mechanism_summary' version='18.1'>
+    <connection class='textscan' directory='/Users/adikoo/Projects/nyc-grocery-initiative-analysis/exports_for_tableau' filename='mechanism_summary.csv' password='' server=''>
+      <relation name='mechanism_summary.csv' table='[mechanism_summary#csv]' type='table' />
+    </connection>
+    <aliases enabled='yes' />
+    <column caption='Mechanism' datatype='string' name='[mechanism]' role='dimension' type='nominal' />
+    <column caption='Eligible Households' datatype='real' default-aggregation='Sum' name='[eligible_households]' role='measure' type='quantitative' />
+    <column caption='Households Reached' datatype='real' default-aggregation='Sum' name='[households_reached]' role='measure' type='quantitative' />
+    <column caption='Total Program Cost' datatype='real' default-aggregation='Sum' name='[total_program_cost]' role='measure' type='quantitative' />
+    <column caption='Coverage Pct' datatype='real' default-aggregation='Avg' name='[coverage_pct]' role='measure' type='quantitative' />
+    <column caption='Cost Per Hh Reached' datatype='real' default-aggregation='Avg' name='[cost_per_hh_reached]' role='measure' type='quantitative' />
+    <column caption='Roi Estimate' datatype='real' default-aggregation='Avg' name='[roi_estimate]' role='measure' type='quantitative' />
+    <column caption='Roi Label' datatype='string' name='[roi_label]' role='dimension' type='nominal' />
+    <column caption='Flag Status' datatype='string' name='[flag_status]' role='dimension' type='nominal' />
+  </datasource>
+  <datasource caption='capex_tiers' inline='true' name='textscan.capex_tiers' version='18.1'>
+    <connection class='textscan' directory='/Users/adikoo/Projects/nyc-grocery-initiative-analysis/exports_for_tableau' filename='capex_tiers.csv' password='' server=''>
+      <relation name='capex_tiers.csv' table='[capex_tiers#csv]' type='table' />
+    </connection>
+    <aliases enabled='yes' />
+    <column caption='Borough Name' datatype='string' name='[borough_name]' role='dimension' type='nominal' />
+    <column caption='Tier' datatype='string' name='[tier]' role='dimension' type='nominal' />
+    <column caption='Tier Order' datatype='integer' name='[tier_order]' role='dimension' type='ordinal' />
+    <column caption='Value Millions' datatype='real' default-aggregation='Sum' name='[value_millions]' role='measure' type='quantitative' />
+  </datasource>
+  <datasource caption='rollout_timeline' inline='true' name='textscan.rollout_timeline' version='18.1'>
+    <connection class='textscan' directory='/Users/adikoo/Projects/nyc-grocery-initiative-analysis/exports_for_tableau' filename='rollout_timeline.csv' password='' server=''>
+      <relation name='rollout_timeline.csv' table='[rollout_timeline#csv]' type='table' />
+    </connection>
+    <aliases enabled='yes' />
+    <column caption='Mechanism' datatype='string' name='[mechanism]' role='dimension' type='nominal' />
+    <column caption='Phase' datatype='string' name='[phase]' role='dimension' type='nominal' />
+    <column caption='Phase Order' datatype='integer' name='[phase_order]' role='dimension' type='ordinal' />
+    <column caption='Start Month' datatype='real' default-aggregation='Sum' name='[start_month]' role='measure' type='quantitative' />
+    <column caption='End Month' datatype='real' default-aggregation='Sum' name='[end_month]' role='measure' type='quantitative' />
+    <column caption='Duration Months' datatype='real' default-aggregation='Sum' name='[duration_months]' role='measure' type='quantitative' />
+    <column caption='Milestone Month' datatype='real' default-aggregation='Avg' name='[milestone_month]' role='measure' type='quantitative' />
+    <column caption='Milestone Coverage Pct' datatype='real' default-aggregation='Avg' name='[milestone_coverage_pct]' role='measure' type='quantitative' />
+    <column caption='Capped' datatype='boolean' name='[capped]' role='dimension' type='nominal' />
+    <column caption='Color Key' datatype='string' name='[color_key]' role='dimension' type='nominal' />
+    <column caption='Milestone Label' datatype='string' name='[milestone_label]' role='dimension' type='nominal' />
+  </datasource>
+  <worksheets>
+  <worksheet name='1 Reach vs Cost Frontier'>
+    <table>
+      <view>
+        <datasources>
+          <datasource caption='mechanism_summary' name='textscan.mechanism_summary' />
+        </datasources>
+        <datasource-dependencies datasource='textscan.mechanism_summary' />
+      </view>
+      <style />
+      <panes>
+        <pane selection-relaxation-option='selection-relaxation-allow'>
+          <view>
+            <breakdown value='auto' />
+          </view>
+          <mark class='Circle' />
+          <encodings>
+        <encoding attr='color' field='[mechanism]' palette='automatic' type='palette'>
+            <map to='#2a78d6'>
+              <bucket>NYC Grocery Tax Credit</bucket>
+            </map>
+            <map to='#1baf7a'>
+              <bucket>Targeted Digital Voucher</bucket>
+            </map>
+            <map to='#898781'>
+              <bucket>Physical Stores</bucket>
+            </map>
+            <map to='#ec835a'>
+              <bucket>Universal Digital Voucher</bucket>
+            </map>
+        </encoding>
+            <size column='[textscan.mechanism_summary].[sum:total_program_cost:qk]' />
+            <text column='[textscan.mechanism_summary].[mechanism]' />
+          </encodings>
+        </pane>
+      </panes>
+      <rows>[textscan.mechanism_summary].[avg:cost_per_hh_reached:qk]</rows>
+      <cols>[textscan.mechanism_summary].[avg:coverage_pct:qk]</cols>
+    </table>
+  </worksheet>
+  <worksheet name='2 Promise vs Real Bill'>
+    <table>
+      <view>
+        <datasources>
+          <datasource caption='capex_tiers' name='textscan.capex_tiers' />
+        </datasources>
+        <datasource-dependencies datasource='textscan.capex_tiers' />
+      </view>
+      <style />
+      <panes>
+        <pane selection-relaxation-option='selection-relaxation-allow'>
+          <view>
+            <breakdown value='auto' />
+          </view>
+          <mark class='Bar' />
+          <encodings>
+        <encoding attr='color' field='[tier]' palette='automatic' type='palette'>
+            <map to='#2a78d6'>
+              <bucket>Planned CapEx (official $12M figure)</bucket>
+            </map>
+            <map to='#eb6834'>
+              <bucket>Realistic CapEx (modeled)</bucket>
+            </map>
+            <map to='#d03b3b'>
+              <bucket>Realistic CapEx + Year-1 hidden subsidy</bucket>
+            </map>
+        </encoding>
+            <text column='[textscan.capex_tiers].[value_millions]' />
+          </encodings>
+        </pane>
+      </panes>
+      <rows>[textscan.capex_tiers].[sum:value_millions:qk]</rows>
+      <cols>[textscan.capex_tiers].[none:borough_name:nk]/[textscan.capex_tiers].[none:tier:nk]</cols>
+    </table>
+  </worksheet>
+  <worksheet name='3 ROI Guardrailed'>
+    <table>
+      <view>
+        <datasources>
+          <datasource caption='mechanism_summary' name='textscan.mechanism_summary' />
+        </datasources>
+        <datasource-dependencies datasource='textscan.mechanism_summary' />
+      </view>
+      <style />
+      <panes>
+        <pane selection-relaxation-option='selection-relaxation-allow'>
+          <view>
+            <breakdown value='auto' />
+          </view>
+          <mark class='Bar' />
+          <encodings>
+        <encoding attr='color' field='[flag_status]' palette='automatic' type='palette'>
+            <map to='#1baf7a'>
+              <bucket>Meets guardrails</bucket>
+            </map>
+            <map to='#d03b3b'>
+              <bucket>Below reach guardrail</bucket>
+            </map>
+        </encoding>
+            <text column='[textscan.mechanism_summary].[roi_label]' />
+          </encodings>
+        </pane>
+      </panes>
+      <rows>[textscan.mechanism_summary].[none:mechanism:nk]</rows>
+      <cols>[textscan.mechanism_summary].[avg:roi_estimate:qk]</cols>
+    </table>
+  </worksheet>
+  <worksheet name='4 Time to Impact'>
+    <table>
+      <view>
+        <datasources>
+          <datasource caption='rollout_timeline' name='textscan.rollout_timeline' />
+        </datasources>
+        <datasource-dependencies datasource='textscan.rollout_timeline' />
+      </view>
+      <style />
+      <panes>
+        <pane selection-relaxation-option='selection-relaxation-allow'>
+          <view>
+            <breakdown value='auto' />
+          </view>
+          <mark class='Bar' />
+          <encodings>
+        <encoding attr='color' field='[color_key]' palette='automatic' type='palette'>
+            <map to='#2a78d6'>
+              <bucket>NYC Grocery Tax Credit</bucket>
+            </map>
+            <map to='#1baf7a'>
+              <bucket>Targeted Digital Voucher</bucket>
+            </map>
+            <map to='#898781'>
+              <bucket>Physical Stores</bucket>
+            </map>
+            <map to='#ec835a'>
+              <bucket>Universal Digital Voucher</bucket>
+            </map>
+            <map to='#e1e0d9'>
+              <bucket>Build &amp; launch phase</bucket>
+            </map>
+        </encoding>
+            <text column='[textscan.rollout_timeline].[milestone_label]' />
+          </encodings>
+        </pane>
+      </panes>
+      <rows>[textscan.rollout_timeline].[none:mechanism:nk]</rows>
+      <cols>[textscan.rollout_timeline].[sum:duration_months:qk]</cols>
+    </table>
+  </worksheet>
+  </worksheets>
+  <dashboards>
+  <dashboard name='Executive Decision Summary'>
+    <style />
+    <size maxheight='1600' maxwidth='2000' minheight='1600' minwidth='2000' />
+    <zones>
+      <zone h='100000' id='1' type-v2='layout-basic' w='100000' x='0' y='0'>
+        <zone h='6000' id='2' param='vert' type-v2='text' w='100000' x='0' y='0'>
+          <formatted-text>
+            <run bold='true' fontsize='18'>NYC Public Grocery Store Initiative — Executive Decision Summary</run>
+          </formatted-text>
+        </zone>
+        <zone h='47000' id='3' type-v2='layout-flow' w='50000' x='0' y='6000'>
+          <zone h='47000' id='4' name='1 Reach vs Cost Frontier' type-v2='layout-basic' w='50000' x='0' y='6000' />
+        </zone>
+        <zone h='47000' id='5' type-v2='layout-flow' w='50000' x='50000' y='6000'>
+          <zone h='47000' id='6' name='2 Promise vs Real Bill' type-v2='layout-basic' w='50000' x='50000' y='6000' />
+        </zone>
+        <zone h='47000' id='7' type-v2='layout-flow' w='50000' x='0' y='53000'>
+          <zone h='47000' id='8' name='3 ROI Guardrailed' type-v2='layout-basic' w='50000' x='0' y='53000' />
+        </zone>
+        <zone h='47000' id='9' type-v2='layout-flow' w='50000' x='50000' y='53000'>
+          <zone h='47000' id='10' name='4 Time to Impact' type-v2='layout-basic' w='50000' x='50000' y='53000' />
+        </zone>
+      </zone>
+    </zones>
+  </dashboard>
+  </dashboards>
+  <windows source-height='42'>
+    <window class='worksheet' name='1 Reach vs Cost Frontier'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+    <window class='dashboard' name='Executive Decision Summary'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='legends' />
+          </strip>
+        </edge>
+      </cards>
+    </window>
+  </windows>
+</workbook>

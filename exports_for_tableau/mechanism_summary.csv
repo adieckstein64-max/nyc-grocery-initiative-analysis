@@ -1,0 +1,5 @@
+mechanism,eligible_households,households_reached,total_program_cost,coverage_pct,cost_per_hh_reached,roi_estimate,roi_label,flag_status
+NYC Grocery Tax Credit,1118035.0,931324.0,1117788285.8000002,83.30007557902928,1200.2141959189285,0.9997965047241077,ROI 1.00  |  83% reach,Meets guardrails
+Targeted Digital Voucher,1118035.0,804986.0,966602672.0,72.00007155411056,1200.7695438181534,0.9994003796799643,ROI 1.00  |  72% reach,Meets guardrails
+Physical Stores,1118035.0,44377.0,57189587.529999994,3.969195955403901,1288.721354079816,0.7656499323738908,ROI 0.77  |  4% reach  (below reach guardrail),Below reach guardrail
+Universal Digital Voucher,1118035.0,944516.0,3310426400.0,84.48000286216443,3504.891817608172,0.34239594225734254,ROI 0.34  |  84% reach,Meets guardrails

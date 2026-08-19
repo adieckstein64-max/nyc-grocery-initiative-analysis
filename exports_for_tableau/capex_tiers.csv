@@ -1,0 +1,16 @@
+borough_name,tier,tier_order,value_millions
+Brooklyn,Planned CapEx (official $12M figure),0,13.5
+Brooklyn,Realistic CapEx (modeled),1,36.41
+Brooklyn,Realistic CapEx + Year-1 hidden subsidy,2,38.7
+Manhattan,Planned CapEx (official $12M figure),0,13.5
+Manhattan,Realistic CapEx (modeled),1,32.0
+Manhattan,Realistic CapEx + Year-1 hidden subsidy,2,34.64
+Queens,Planned CapEx (official $12M figure),0,13.5
+Queens,Realistic CapEx (modeled),1,32.43
+Queens,Realistic CapEx + Year-1 hidden subsidy,2,34.53
+Staten Island,Planned CapEx (official $12M figure),0,13.5
+Staten Island,Realistic CapEx (modeled),1,31.11
+Staten Island,Realistic CapEx + Year-1 hidden subsidy,2,33.65
+Bronx,Planned CapEx (official $12M figure),0,13.5
+Bronx,Realistic CapEx (modeled),1,31.11
+Bronx,Realistic CapEx + Year-1 hidden subsidy,2,33.52

@@ -33,13 +33,15 @@ nyc-grocery-initiative-analysis/
 ├── data/
 │   ├── raw/                # source/mock input data (gitignored)
 │   └── processed/          # cleaned intermediate data (gitignored)
-├── exports_for_tableau/    # flat CSVs / extracts for Tableau ingestion (gitignored)
+├── exports_for_tableau/    # flat CSVs feeding the Tableau workbook (gitignored)
 ├── exports/charts/         # 4 executive decision charts (PNG, dpi=300)
+├── NYC_Grocery_Initiative_Dashboard.twb  # Tableau workbook — the 4 charts + dashboard, pre-built
 ├── notebooks/              # exploratory analysis
 ├── scripts/                # one-off / entrypoint scripts
 │   ├── setup_database.py           # creates DB + runs schema.sql
 │   ├── run_pipeline.py             # generates mock data, loads MySQL, exports CSVs
-│   └── generate_decision_charts.py # builds the 4 executive decision charts
+│   ├── generate_decision_charts.py # builds the 4 executive decision charts (PNG)
+│   └── build_tableau_workbook.py   # builds NYC_Grocery_Initiative_Dashboard.twb
 ├── sql/
 │   └── schema.sql          # MySQL DDL for all tables
 ├── src/
@@ -50,7 +52,8 @@ nyc-grocery-initiative-analysis/
 │   ├── policy_model.py       # subsidy scenarios, means-testing friction, scenario_outputs simulation
 │   ├── pipeline.py           # orchestrates generation -> MySQL load -> Tableau CSV export
 │   ├── style.py              # validated chart palette + mechanism color mapping
-│   └── decision_charts.py    # the 4 executive decision charts
+│   ├── decision_charts.py    # the 4 executive decision charts + Tableau CSV exports
+│   └── tableau_workbook.py   # generates NYC_Grocery_Initiative_Dashboard.twb
 ├── .env.example
 ├── requirements.txt
 └── README.md
@@ -66,7 +69,14 @@ cp .env.example .env   # then fill in your MySQL credentials
 python scripts/setup_database.py
 python scripts/run_pipeline.py
 python scripts/generate_decision_charts.py
+python scripts/build_tableau_workbook.py
 ```
+
+Then open `NYC_Grocery_Initiative_Dashboard.twb` in Tableau Desktop — it connects to the CSVs
+in `exports_for_tableau/` by absolute path, so keep the repo at its current location (or
+re-run `build_tableau_workbook.py` after moving it, which regenerates the paths). If any shelf
+comes in empty, the datasource connection is still correct — re-dragging that one field takes
+seconds; this workbook was authored without a way to open Tableau and verify it end-to-end.
 
 ## Status
 
@@ -77,5 +87,4 @@ python scripts/generate_decision_charts.py
 - [x] Alternative policy modeling (tax credit / voucher)
 - [x] Pipeline export to Tableau
 - [x] Executive decision charts (Matplotlib/Seaborn)
-- [ ] Tableau dashboard — see `TABLEAU_GUIDE.md` for exact build steps (Tableau Desktop is a
-      GUI app with no automation path here, so this is a guided manual build, not scripted)
+- [x] Tableau dashboard (`NYC_Grocery_Initiative_Dashboard.twb`)
