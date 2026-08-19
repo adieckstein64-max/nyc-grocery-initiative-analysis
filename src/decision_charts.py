@@ -341,6 +341,35 @@ def chart_4_time_to_impact(summary: pd.DataFrame) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Tableau-ready exports — pre-aggregated so the workbook needs no LOD calcs.
+# ---------------------------------------------------------------------------
+
+def export_tableau_extras(summary: pd.DataFrame) -> None:
+    mech_out = summary.copy()
+    mech_out["mechanism"] = mech_out["mechanism"].astype(str)
+    mech_out.to_csv(DATA_DIR / "mechanism_summary.csv", index=False)
+
+    coverage_by_mechanism = summary.set_index("mechanism")["coverage_pct"]
+    rows = []
+    for mechanism, t in ROLLOUT_TIMELINE.items():
+        rows.append({
+            "mechanism": mechanism, "phase": "Build & launch", "phase_order": 1,
+            "start_month": 0, "end_month": t["launch_month"],
+            "duration_months": t["launch_month"],
+            "milestone_month": None, "milestone_coverage_pct": None, "capped": False,
+        })
+        rows.append({
+            "mechanism": mechanism, "phase": "Ramp to coverage", "phase_order": 2,
+            "start_month": t["launch_month"], "end_month": t["coverage_month"],
+            "duration_months": t["coverage_month"] - t["launch_month"],
+            "milestone_month": t["coverage_month"],
+            "milestone_coverage_pct": round(float(coverage_by_mechanism[mechanism]), 1),
+            "capped": bool(t.get("capped", False)),
+        })
+    pd.DataFrame(rows).to_csv(DATA_DIR / "rollout_timeline.csv", index=False)
+
+    print(f"Exported mechanism_summary.csv and rollout_timeline.csv to {DATA_DIR}")
+
 
 def generate_all() -> None:
     set_style()
@@ -351,6 +380,7 @@ def generate_all() -> None:
     chart_2_promise_vs_real_bill(tiers)
     chart_3_roi_guardrailed(summary)
     chart_4_time_to_impact(summary)
+    export_tableau_extras(summary)
 
     print(f"Wrote 4 decision charts to {OUT_DIR}")
 

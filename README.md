@@ -77,4 +77,5 @@ python scripts/generate_decision_charts.py
 - [x] Alternative policy modeling (tax credit / voucher)
 - [x] Pipeline export to Tableau
 - [x] Executive decision charts (Matplotlib/Seaborn)
-- [ ] Tableau dashboard
+- [ ] Tableau dashboard — see `TABLEAU_GUIDE.md` for exact build steps (Tableau Desktop is a
+      GUI app with no automation path here, so this is a guided manual build, not scripted)
